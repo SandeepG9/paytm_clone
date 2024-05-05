@@ -102,10 +102,39 @@ router.post("/updateUser",checkSigninCredentials,(req,res)=>{
 })
 
 // router.post("/bulk",async(req,res)=>{
-//         const find_name = req.query.filter;
-//         const userExist = await User.findOne({username:find_name});
-//         console.log(userExist);
-
+//         let find_name = req.query.filter;
+//         console.log(find_name);
+//         // const userExist = await User.findOne($or:[ {'_id':objId}, {'name':param}, {'nickname':param} ]);
+//         const docs = await User.find( { $or:[ {'firstname':find_name} ]}, 
+//         function(err,docs){
+//             if(!err) res.send(docs);
+//         });
 // })
+
+router.get("/bulk", async (req, res) => {
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
+})
+
 
 module.exports = router;
