@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt_secret = require("../config")
 const router = express.Router();
-const { User } = require("../db");
+const { User, Account } = require("../db");
 const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const checkSigninCredentials = require("./middlewares");
@@ -34,19 +34,22 @@ router.post("/signup",async (req,res)=>{
                 lastName:req.body.lastName,
                 password:req.body.password
             })
+            const user_datas = await user_data.save();
+            const user_idData = user_datas.id;
+            const newAccount = new Account({
+                userId:user_idData,
+                balance: 1+Math.random()*10000
+            })
 
-            const user_data_saved = await user_data.save();
-            const token = jwt.sign({username:req.body.username},jwt_secret);
+            const saveAccount = await newAccount.save();
 
             res.status(201).json({
-            messsage:"User Created Successfully",
-            token:token
+            messsage:"User Created Successfully"
             }) 
         }
     }
     catch(err)
     {
-        console.log(err);
         res.status(500).json(
             {msg:"Signup Failed",
             error:err}
@@ -63,7 +66,8 @@ router.post("/signin",async(req,res)=>{
         }
         else
         {
-            res.status(201).json("You are logged In");
+            const token = jwt.sign({username:req.body.username},jwt_secret);
+            res.status(201).json({message:"You are logged In",token:token});
         }
     }
     catch(err)
@@ -101,15 +105,6 @@ router.post("/updateUser",checkSigninCredentials,(req,res)=>{
 
 })
 
-// router.post("/bulk",async(req,res)=>{
-//         let find_name = req.query.filter;
-//         console.log(find_name);
-//         // const userExist = await User.findOne($or:[ {'_id':objId}, {'name':param}, {'nickname':param} ]);
-//         const docs = await User.find( { $or:[ {'firstname':find_name} ]}, 
-//         function(err,docs){
-//             if(!err) res.send(docs);
-//         });
-// })
 
 router.get("/bulk", async (req, res) => {
     const filter = req.query.filter || "";

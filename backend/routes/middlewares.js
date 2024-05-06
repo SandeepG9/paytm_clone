@@ -4,7 +4,6 @@ function checkSigninCredentials(req,res,next)
 {
     const authHeader = req.headers.authorization;
     const token = authHeader.split(' ')[1];
-    console.log(token);
     if(!authHeader && !authHeader.startsWith('Bearer '))
     {
         res.status(403).json({message:""});
@@ -17,6 +16,7 @@ function checkSigninCredentials(req,res,next)
             const decode = jwt.verify(token,jwt_secret)
             if(decode)
             {
+                req.userId = decode;
                 next();
             }
         }
