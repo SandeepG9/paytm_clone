@@ -13,7 +13,7 @@ function checkSigninCredentials(req,res,next)
         try
         {
             
-            const decode = jwt.verify(token,jwt_secret)
+            const decode = jwt.verify(token,jwt_secret);
             if(decode)
             {
                 req.userId = decode;

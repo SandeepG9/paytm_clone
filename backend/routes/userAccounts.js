@@ -22,42 +22,38 @@ router.post("/balance", checkSigninCredentials, async (req, res) => {
 
 
 
-router.post("/transfer",checkSigninCredentials,async(req,res)=>{
-    try
-    {
-        const username = req.userId.username;
-        const dataFound = await User.findOne({username:username});
-        const dataId = dataFound._id;
-        const accoundData = await Account.findOne({userId:dataId})
-        const account_balance = accoundData.balance
-        const to = req.body.to;
-        const amount = req.body.amount;
+router.post('/transfer', async (req, res) => {
+   const session = await mongoose.startSession();
 
-        let balanceExist;
-        if(account_balance>=amount)
-        {   
-            // accoundData.balance  = accoundData.balance-amount;
-            console.log(to);
-            // await accoundData.save();
-        }
-        else
-        {
-            
-            res.status(404).json("Insufficeint Balance");
-        }
+    session.startTransaction();
+    const { amount, to } = req.body;
 
+    const account = await Account.findOne({ userId: req.userId }).session(session);
 
-
-
-
-
-
-        res.status(201).json("data found");
+    if (!account || account.balance < amount) {
+        await session.abortTransaction();
+        return res.status(400).json({
+            message: "Insufficient balance"
+        });
     }
-    catch(err)
-    {
-        res.status(404).json("Transfer failed");
+
+    const toAccount = await Account.findOne({ userId: to }).session(session);
+
+    if (!toAccount) {
+        await session.abortTransaction();
+        return res.status(400).json({
+            message: "Invalid account"
+        });
     }
-})
+
+    await Account.updateOne({ userId: req.userId }, { $inc: { balance: -amount } }).session(session);
+    await Account.updateOne({ userId: to }, { $inc: { balance: amount } }).session(session);
+
+    await session.commitTransaction();
+    res.json({
+        message: "Transfer successful"
+    });
+});
+
 
 module.exports = router;
