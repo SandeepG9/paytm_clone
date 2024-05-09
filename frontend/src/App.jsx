@@ -1,4 +1,7 @@
-import { Dashboard, Send, Signin, Signup } from "./components/Home"
+import { Dashboard} from "./Pages/Dashboard"
+import {Send} from "./Pages/Send"
+import {Signin} from "./Pages/Signin"
+import {Signup} from "./Pages/Signup"
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 
 function App() {
