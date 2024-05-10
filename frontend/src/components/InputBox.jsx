@@ -1,14 +1,12 @@
 import React from 'react';
 
-const InputBox = ({label,type}) => {
+const InputBox = ({label,type,onChange}) => {
     return (
-        <>
             <div>
                 {label}
                 <br />
-                <input className='border border-black' type={type} />
+                <input onChange = {onChange} className='border border-black' type={type} />
             </div>
-        </>
     );
 };
 

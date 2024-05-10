@@ -4,7 +4,9 @@ function SubHeading({label})
 {
     return(
     <>
-        <p>{label}</p>
+        <div className="pb-3">
+            <p>{label}</p>
+        </div>
     </>)
 }
 export default SubHeading

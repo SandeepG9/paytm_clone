@@ -4,7 +4,7 @@ function Send()
 {
     return(
         <>
-        
+            This is Send page
         </>
     )
 }
