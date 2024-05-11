@@ -11,31 +11,32 @@ function Signup() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  async function sendData() {
-    try {
-      const response = await axios.post("http://localhost:3000/api/v1/users/signup", {
-        username: userName,
-        firstName: firstName,
-        lastName: lastName,
-        password: password,
-      });
-      console.log('Signup successful:', response.data);
-      // Optional: Redirect the user or clear form, etc.
-    } catch (error) {
-      console.error('Error during signup:', error);
-    }
-  }
 
   return (
     <div className="justify-center bg-gray-500">
       <div className="p-4 flex flex-col items-center justify-center min-h-screen bg-white p-2">
         <Heading label="Sign up" />
         <SubHeading label="Enter your information to create your account" />
+        <InputBox onChange={e => setUserName(e.target.value)} label="Username" type="text" />
         <InputBox onChange={e => setFirstName(e.target.value)} label="First Name" type="text" />
         <InputBox onChange={e => setLastName(e.target.value)} label="Last Name" type="text" />
-        {/* <InputBox onChange={e => setEmail(e.target.value)} label="Email" type="email" /> */}
         <InputBox onChange={e => setPassword(e.target.value)} label="Password" type="password" />
-        <ButtonComponent label="Sign up" onClick={sendData} />
+        <ButtonComponent label="Sign up" onClick={async()=>{
+            try{
+              const resp = await axios.post(" http://localhost:3000/api/v1/users/signup",
+                {
+                  username: userName,
+                  firstName: firstName,
+                  lastName: lastName,
+                  password: password
+                }
+              )
+            }
+            catch(err)
+            {
+                console.log("Something went wrong while creating account")
+            }
+        }}/>
       </div>
     </div>
   );

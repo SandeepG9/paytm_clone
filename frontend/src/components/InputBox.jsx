@@ -5,7 +5,7 @@ const InputBox = ({label,type,onChange}) => {
             <div>
                 {label}
                 <br />
-                <input onChange = {onChange} className='border border-black' type={type} />
+                <input onChange = {onChange} className='rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500' type={type} />
             </div>
     );
 };
