@@ -4,6 +4,7 @@ import SubHeading from '../components/SubHeading';
 import InputBox from '../components/InputBox';
 import ButtonComponent from '../components/ButtonComponent';
 import axios from 'axios';
+import BottomWarningComponent from '../components/BottomWarningComponent';
 
 function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -37,6 +38,8 @@ function Signup() {
                 console.log("Something went wrong while creating account")
             }
         }}/>
+   <BottomWarningComponent label={"Already have an account? "} routing = {"signin"}/>
+
       </div>
     </div>
   );

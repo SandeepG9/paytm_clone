@@ -13,6 +13,13 @@ const signupBody = zod.object(
         password: zod.string()
     }
 )
+
+const signinBody = zod.object(
+    {
+        username: zod.string().email().min(1),
+        password: zod.string()
+    }
+)
 router.post("/signup",async (req,res)=>{
     const {success} = await signupBody.safeParse(req.body);
     if(!success)
@@ -58,21 +65,30 @@ router.post("/signup",async (req,res)=>{
 })
 
 router.post("/signin",async(req,res)=>{
-    try{
-        const exist = await User.findOne({username:req.body.username});
-        if(!exist && !decode)
+    try
+    {
+        const sucess =await signinBody.parse(req.body);
+        if(!sucess)
         {
-            res.status(400).json("user not found");  
+            res.status(401).json({message:"Invalid cred"});
         }
         else
         {
-            const token = jwt.sign({username:req.body.username},jwt_secret);
-            res.status(201).json({message:"You are logged In",token:token});
+           const usernameExist =await User.findOne({username:req.body.username,password:req.body.password});
+           if(usernameExist.password===req.body.password && usernameExist.username === req.body.username)
+            {
+                const token = jwt.sign({userId:usernameExist._id},jwt_secret);
+                res.status(201).json({message:"Logged In successfully",token:token});
+            }
+            else
+            {
+                res.status(404).json({messgae:"Invalid Credentials"});
+            }
         }
     }
     catch(err)
     {
-        res.status(441).json({message:"Error while Login"});
+        res.status(404).json({message:"Invalid Credentials"});
     }
 })
 
@@ -106,7 +122,7 @@ router.post("/updateUser",checkSigninCredentials,(req,res)=>{
 })
 
 
-router.get("/bulk", async (req, res) => {
+router.get("/bulk",checkSigninCredentials, async (req, res) => {
     const filter = req.query.filter || "";
 
     const users = await User.find({
