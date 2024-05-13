@@ -4,6 +4,7 @@ import InputBox from "../components/InputBox"
 import ButtonComponent from "../components/ButtonComponent";
 import BottomWarningComponent from "../components/BottomWarningComponent";
 import axios from "axios"
+import SubHeading from "../components/SubHeading"
 function Signin()
 {
     const [username,setUsername] = useState("");
@@ -12,10 +13,13 @@ function Signin()
 
     return(
         <div className="flex justify-center items-center min-h-screen bg-neutral-500">
-  <div className="bg-white rounded-lg shadow-lg p-6">
-    <div className="mb-6 text-center">
-      <Heading label={"Sign In"}></Heading>
-    </div>
+        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="mb-6 text-center">
+             <Heading label={"Sign In"}></Heading>
+        </div>
+        <div>
+          <SubHeading label="Enter credentials to access your account"/>
+        </div>
     <div className="mt-4">
       <InputBox
         onChange={(e) => {

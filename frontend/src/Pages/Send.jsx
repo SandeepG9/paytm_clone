@@ -1,10 +1,10 @@
 import React from "react"
-
+import CardComponent from "../components/CardComponent"
 function Send()
 {
     return(
         <>
-            This is Send page
+            <CardComponent/>
         </>
     )
 }

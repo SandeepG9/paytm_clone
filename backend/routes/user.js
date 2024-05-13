@@ -123,28 +123,9 @@ router.post("/updateUser",checkSigninCredentials,(req,res)=>{
 
 
 router.get("/bulk",checkSigninCredentials, async (req, res) => {
-    const filter = req.query.filter || "";
-
-    const users = await User.find({
-        $or: [{
-            firstName: {
-                "$regex": filter
-            }
-        }, {
-            lastName: {
-                "$regex": filter
-            }
-        }]
-    })
-
-    res.json({
-        user: users.map(user => ({
-            username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            _id: user._id
-        }))
-    })
+    const names =await User.find({username,lastName});
+    console.log(names);
+    res.status(201).json({"message":names})
 })
 
 
